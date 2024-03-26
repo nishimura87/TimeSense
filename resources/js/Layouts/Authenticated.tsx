@@ -7,7 +7,7 @@ import { Link } from "@inertiajs/inertia-react";
 
 interface Props {
     auth: any;
-    header: React.ReactNode;
+    header?: React.ReactNode;
     children: React.ReactNode;
 }
 
@@ -33,6 +33,9 @@ export default function Authenticated({ auth, header, children }: Props) {
                                     active={route().current("dashboard")}
                                 >
                                     Dashboard
+                                </NavLink>
+                                <NavLink href={route('todo.index')} active={route().current('todo.index')}>
+                                    Todo
                                 </NavLink>
                             </div>
                         </div>
@@ -132,6 +135,12 @@ export default function Authenticated({ auth, header, children }: Props) {
                             active={route().current("dashboard")}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('todo.index')}
+                            active={route().current('todo.index')}
+                        >
+                            Todo
                         </ResponsiveNavLink>
                     </div>
 
