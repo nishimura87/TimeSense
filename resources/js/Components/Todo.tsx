@@ -1,5 +1,5 @@
-import React from 'react';
-import {useForm} from "@inertiajs/react";
+import React, { useEffect } from "react";
+import { useForm } from "@inertiajs/react";
 import Select, { SingleValue } from 'react-select';
 import DangerButton from "@/Components/DangerButton";
 
@@ -10,6 +10,7 @@ interface TodoType {
   due_date: string;
   created_at: string;
   progress: number;
+  page: string;
 }
 
 interface OptionType {
@@ -31,19 +32,32 @@ const Todo: React.FC<TodoProps> = ({ todo, onClick }) => {
   day: '2-digit'
 }).format(new Date(todo.created_at));
 
-  const {data, patch, delete: destroy, processing} = useForm(todo);
+  const { data, setData, patch, delete: destroy, processing } = useForm(todo);
+
+  // 現在のページ番号を取得
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const currentPage = queryParams.get('page') || '1';
+    if (data.page !== currentPage) {
+      setData({ ...data, page: currentPage });
+    }
+  }, [data.page, setData]);
 
   const update = (option: SingleValue<OptionType>) => {
     // option が null または undefined でないことを確認する
     if (option) {
       data.progress = option.value;
-      patch(route('todo.update', todo.id));
+      patch(route('todo.update', { id: todo.id }), {
+        preserveScroll: true, // スクロール位置を保持
+      });
     }
   }
 
   const destroySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    destroy(route('todo.destroy', todo.id));
+    const queryParams = new URLSearchParams(window.location.search);
+    const page = queryParams.get('page') || '1';
+    destroy(route('todo.destroy', todo.id, page));
   };
 
   const options = [

@@ -50,7 +50,10 @@ class TodoController extends Controller
 
         $request->user()->todos()->create($validated);
 
-        return redirect(route('todo.index'));
+        // リクエストから現在のページ番号を取得、デフォルトは1
+        $page = $request->input('page', 1);
+
+        return redirect()->route('todo.index', ['page' => $page]);
     }
 
     /**
@@ -87,7 +90,9 @@ class TodoController extends Controller
         $this->authorize('update', $todo);
         $todo->update($request->all());
 
-        return redirect(route('todo.index'));
+        $page = $request->input('page', 1);
+
+        return redirect(route('todo.index', ['page' => $page]));
     }
 
     /**
@@ -96,11 +101,13 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Todo $todo)
+    public function destroy(Request $request, Todo $todo): RedirectResponse
     {
         $this->authorize('delete', $todo);
         $todo->delete();
 
-        return redirect(route('todo.index'));
+        $page = $request->input('page', 1);
+
+        return redirect(route('todo.index', ['page' => $page]));
     }
 }

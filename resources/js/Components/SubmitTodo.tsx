@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from '@inertiajs/react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css"
@@ -9,6 +9,7 @@ import Button from "@/Components/Button";
 interface FormData {
   title: string;
   due_date: string | null; // due_dateはstringまたはnull
+  page: string;
 }
 
 export default function SubmitTodo() {
@@ -16,21 +17,32 @@ export default function SubmitTodo() {
   const { data, setData, post, processing, reset, errors } = useForm<FormData>({
     title: '',
     due_date: null, // 初期値としてnullを設定
+    page: '1',
   });
+
+  // 現在のページ番号を取得
+  useEffect(() => {
+  const queryParams = new URLSearchParams(window.location.search);
+  const currentPage = queryParams.get('page') || '1';
+  if (data.page !== currentPage) {
+    setData(data => ({ ...data, page: currentPage }));
+  }
+}, [data.page]); // setDataを依存配列から削除
+
+
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
 
   // due_dateがstring型であることを確認してからDateオブジェクトに変換
   const dueDate = data.due_date ? new Date(data.due_date) : null;
-
   const formattedData = {
     ...data,
     // Dateオブジェクトを使用してdue_dateをISO文字列に変換
-    due_date: dueDate ? dueDate.toISOString().substring(0, 10) : null,
+    due_date: dueDate ? dueDate.toISOString().substring(0, 10) : null
   };
 
-  post(route('todo.store'), {
+  post(route('todo.store',), {
     data: formattedData,
     onSuccess: () => reset(),
   });
