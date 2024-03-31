@@ -2,7 +2,7 @@ import "./bootstrap";
 import "../css/app.css";
 
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client"; // 変更: createRootをインポート
 import { createInertiaApp } from "@inertiajs/inertia-react";
 import { InertiaProgress } from "@inertiajs/progress";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
@@ -18,7 +18,8 @@ createInertiaApp({
             import.meta.glob("./Pages/**/*.tsx")
         ),
     setup({ el, App, props }) {
-        return render(<App {...props} />, el);
+        const root = createRoot(el); // 新しい root インスタンスを作成
+        root.render(<App {...props} />); // renderメソッドの代わりにroot.renderを使用
     },
 });
 
