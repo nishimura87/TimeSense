@@ -30,14 +30,16 @@ export default function Index(props: any) {
     return (
         <Authenticated auth={props.auth}>
             <div className="max-w-3xl mx-auto p-3 bg-white mt-3 border rounded">
+                <SubmitTodo />
+                <hr className="my-3" />
                 <table className="w-full table-fixed">
                     <thead>
                         <tr>
-                            <th className="pb-2">todo</th>
-                            <th className="pb-2">進捗</th>
-                            <th className="pb-2">期日</th>
-                            <th className="pb-2">削除</th>
-                            <th className="pb-2">作成日</th>
+                            <th className="w-4/12 pb-2">todo</th>
+                            <th className="w-3/12 pb-2">進捗</th>
+                            <th className="w-2/12 pb-2">期日</th>
+                            <th className="w-2/12 pb-2">削除</th>
+                            <th className="w-2/12 pb-2">作成日</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,24 +48,24 @@ export default function Index(props: any) {
                         ))}
                     </tbody>
                 </table>
-                <ReactPaginate
-                    previousLabel={"前"}
-                    nextLabel={"次"}
-                    breakLabel={"..."}
-                    pageCount={props.todos.last_page}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    forcePage={forcePage}
-                    onPageChange={handlePageClick}
-                    containerClassName="flex my-2 text-lg items-center"
-                    pageClassName="border"
-                    activeClassName="text-white bg-black"
-                    pageLinkClassName="mx-2"
-                    previousClassName="mr-2"
-                    nextClassName="ml-2"
-                />
-                <hr className="my-3" />
-                <SubmitTodo />
+                {props.todos.last_page > 1 && (
+                    <ReactPaginate
+                        previousLabel={"前"}
+                        nextLabel={"次"}
+                        breakLabel={"..."}
+                        pageCount={props.todos.last_page}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        forcePage={forcePage}
+                        onPageChange={handlePageClick}
+                        containerClassName="flex my-2 text-lg items-center"
+                        pageClassName="border"
+                        activeClassName="text-white bg-black"
+                        pageLinkClassName="mx-2"
+                        previousClassName="mr-2"
+                        nextClassName="ml-2"
+                    />
+                )}
             </div>
         </Authenticated>
     );

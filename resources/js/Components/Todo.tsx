@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { useForm } from "@inertiajs/react";
 import Select, { SingleValue } from 'react-select';
 import DangerButton from "@/Components/DangerButton";
+import Modal from './Modal';
 
 // todo オブジェクトの型定義
 interface TodoType {
@@ -23,7 +24,7 @@ interface TodoProps {
   onClick: (todo: TodoType) => void; // onClick プロパティの型定義を追加
 }
 
-const Todo: React.FC<TodoProps> = ({ todo, onClick }) => {
+const Todo: React.FC<TodoProps> = ({ todo }) => {
 
   // Date オブジェクトを年月日形式でフォーマット
   const formattedCreatedAt = new Intl.DateTimeFormat('ja-JP', {
@@ -66,13 +67,22 @@ const Todo: React.FC<TodoProps> = ({ todo, onClick }) => {
     { value: 2, label: '完了'},
   ]
 
+  // モーダル表示状態の管理
+  const [showModal, setShowModal] = useState(false);
+
+  // モーダルを開く関数
+  const handleOpenModal = () => setShowModal(true);
+
+  // モーダルを閉じる関数
+  const handleCloseModal = () => setShowModal(false);
+
 
   return (
     <tr className={`border border-white ${data.progress === 1 ? "bg-yellow-300" : data.progress === 2 ? "line-through bg-gray-300" : "bg-blue-300"}`}>
-      <td className="w-4/12 p-2 overflow-hidden text-overflow-ellipsis whitespace-nowrap cursor-pointer" onClick={() => onClick(todo)}>
+      <td className="p-2 overflow-hidden text-overflow-ellipsis whitespace-nowrap cursor-pointer" onClick={handleOpenModal}>
         {todo.title}
       </td>
-      <td className="w-2/12 p-2">
+      <td className="p-2">
         <Select
           className="mx-2 text-center font-bold text-sm"
           options={options}
@@ -80,13 +90,23 @@ const Todo: React.FC<TodoProps> = ({ todo, onClick }) => {
           onChange={update}
         />
       </td>
-      <td className="w-2/12 p-2 text-sm text-center">{todo.due_date}</td>
-      <td className="w-2/12 p-2 text-center">
+      <td className="p-2 text-sm text-center">{todo.due_date}</td>
+      <td className="p-2 text-center">
         <form onSubmit={destroySubmit}>
           <DangerButton className="bg-red-500" processing={processing}>削除</DangerButton>
         </form>
       </td>
-      <td className="w-2/12 p-2 text-sm text-center">{formattedCreatedAt}</td>
+      <td className="p-2 text-sm text-center">{formattedCreatedAt}</td>
+      <td>
+        <Modal show={showModal} onClose={handleCloseModal}>
+          <div className="modal w-[30rem] min-h-[10rem] overflow-y-auto">
+            <div className="break-words">
+              <p><span className="font-bold">期日：</span>{todo.due_date}</p>
+              <p><span className="font-bold">todo：</span>{todo.title}</p>
+            </div>
+          </div>
+        </Modal>
+      </td>
     </tr>
   );
 };

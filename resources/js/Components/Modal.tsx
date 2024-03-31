@@ -1,32 +1,30 @@
 import React from 'react';
 
 interface ModalProps {
-  isOpen: boolean;
+  show: boolean;
   onClose: () => void;
-  children: React.ReactNode; 
+  children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
+const Modal: React.FC<ModalProps> = ({ show, onClose, children }) => {
+  if (!show) return null;
 
-  // モーダルの外側をクリックしたときにモーダルを閉じる
-  const handleBackdropClick = () => {
-    onClose();
-  };
+  const handleOutsideClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  // イベントが発生した要素から最も近い 'modal-content' クラスを持つ親要素を検索
+  const isInsideModal = (event.target as HTMLElement).closest('.modal-content');
 
-  // モーダルの内部でのクリックイベントを止める（バブリング防止）
-  const handleModalClick = (event: any) => {
-    event.stopPropagation();
+  // 'modal-content' クラスを持つ親要素がない場合、つまりクリックがモーダルの外側で発生した場合
+  if (!isInsideModal) {
+      onClose();
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 flex justify-center items-center" onClick={handleBackdropClick}>
-      <div className="bg-white p-4 rounded-lg shadow-lg w-1/2 max-w-1/2 mx-auto" onClick={handleModalClick}>
-        {children}
-        <div className="flex justify-end">
-          <button onClick={onClose} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
-            閉じる
-          </button>
+    <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-40" onClick={handleOutsideClick}>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="modal-content bg-white p-5 rounded shadow-lg relative" onClick={e => e.stopPropagation()}>
+          <button onClick={onClose} className="absolute bottom-0 right-0 m-2 p-1 border rounded">閉じる</button>
+          {children}
         </div>
       </div>
     </div>
