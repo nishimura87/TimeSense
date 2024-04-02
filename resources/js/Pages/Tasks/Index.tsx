@@ -1,41 +1,50 @@
 import React, { useState } from 'react';
 import Authenticated from "@/Layouts/Authenticated";
-import SubmitTodo from '@/Components/SubmitTodo';
-import Todo from '@/Components/Todo';
+import SubmitTask from '@/Components/Submittask';
+import Task from '@/Components/task';
 import ReactPaginate from 'react-paginate';
 import { Inertia } from '@inertiajs/inertia';
+import ErrorMessages from '@/Components/ErrorMessages';
 
 export default function Index(props: any) {
-    const todos = Array.isArray(props.todos.data) ? props.todos.data : [];
+    const tasks = Array.isArray(props.tasks.data) ? props.tasks.data : [];
     const [currentPage] = useState(0);
-    const todosPerPage = 10; // 1ページあたりのtodo数
-    const [forcePage, setForcePage] = useState(props.todos.current_page - 1);
+    const tasksPerPage = 10; // 1ページあたりのtask数
+    const [forcePage, setForcePage] = useState(props.tasks.current_page - 1);
 
-    // 現在のページに表示するtodosを計算
-    const currentTodos = todos.slice(currentPage * todosPerPage, (currentPage + 1) * todosPerPage);
+    // 現在のページに表示するtasksを計算
+    const currentTasks = tasks.slice(currentPage * tasksPerPage, (currentPage + 1) * tasksPerPage);
 
     // ページ変更時のハンドラ
     const handlePageClick = (event:any) => {
         const newPage = event.selected;
         setForcePage(newPage);
-        Inertia.visit(`/todo?page=${newPage + 1}`);
+        Inertia.visit(`/task?page=${newPage + 1}`);
     };
 
-    // Todoをクリックした時の処理
-    const handleTodoClick = (todo: any) => {
+    // Taskをクリックした時の処理
+    const handleTaskClick = (task: any) => {
         // ここにクリックした時の処理を書く。例えば:
-        console.log("Todo clicked:", todo);
+        console.log("Task clicked:", task);
     };
 
     return (
         <Authenticated auth={props.auth}>
-            <div className="max-w-3xl mx-auto p-3 bg-white mt-3 border rounded">
-                <SubmitTodo />
+            <div className="max-w-3xl mx-auto p-3 bg-white border rounded">
+                <SubmitTask />
+                {Object.keys(props.errors).length > 0 && (
+                <div className="mt-3">
+                    {Object.entries(props.errors).map(([field, errors]) => (
+                        // errorsの型をstring[] | undefinedに強制する
+                        <ErrorMessages key={field} errors={errors as string[] | undefined} />
+                    ))}
+                </div>
+                )}
                 <hr className="my-3" />
                 <table className="w-full table-fixed">
                     <thead>
                         <tr>
-                            <th className="w-4/12 pb-2">todo</th>
+                            <th className="w-4/12 pb-2">タスク</th>
                             <th className="w-3/12 pb-2">進捗</th>
                             <th className="w-2/12 pb-2">期日</th>
                             <th className="w-2/12 pb-2">削除</th>
@@ -43,17 +52,17 @@ export default function Index(props: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentTodos.map((todo:any) => (
-                            <Todo key={todo.id} todo={todo} onClick={handleTodoClick} />
+                        {currentTasks.map((task:any) => (
+                            <Task key={task.id} task={task} onClick={handleTaskClick} />
                         ))}
                     </tbody>
                 </table>
-                {props.todos.last_page > 1 && (
+                {props.tasks.last_page > 1 && (
                     <ReactPaginate
                         previousLabel={"前"}
                         nextLabel={"次"}
                         breakLabel={"..."}
-                        pageCount={props.todos.last_page}
+                        pageCount={props.tasks.last_page}
                         marginPagesDisplayed={2}
                         pageRangeDisplayed={5}
                         forcePage={forcePage}

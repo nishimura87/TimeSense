@@ -34,8 +34,17 @@ export default function Authenticated({ auth, header, children }: Props) {
                                 >
                                     Dashboard
                                 </NavLink>
-                                <NavLink href={route('todo.index')} active={route().current('todo.index')}>
-                                    Todo
+                                <NavLink
+                                    href={route('task.index')}
+                                    active={route().current('task.index')}
+                                >
+                                    タスク
+                                </NavLink>
+                                <NavLink
+                                    href={route('schedule.index')}
+                                    active={route().current('schedule.index')}
+                                    >
+                                    カレンダー
                                 </NavLink>
                             </div>
                         </div>
@@ -137,10 +146,10 @@ export default function Authenticated({ auth, header, children }: Props) {
                             Dashboard
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            href={route('todo.index')}
-                            active={route().current('todo.index')}
+                            href={route('task.index')}
+                            active={route().current('task.index')}
                         >
-                            Todo
+                            Task
                         </ResponsiveNavLink>
                     </div>
 
@@ -175,7 +184,9 @@ export default function Authenticated({ auth, header, children }: Props) {
                 </header>
             )}
 
-            <main>{children}</main>
+            <main className="py-3">
+                {children}
+            </main>
         </div>
     );
 }

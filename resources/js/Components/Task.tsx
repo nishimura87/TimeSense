@@ -4,8 +4,8 @@ import Select, { SingleValue } from 'react-select';
 import DangerButton from "@/Components/DangerButton";
 import Modal from './Modal';
 
-// todo オブジェクトの型定義
-interface TodoType {
+// task オブジェクトの型定義
+interface TaskType {
   id: number | string;
   title: string;
   due_date: string;
@@ -19,21 +19,21 @@ interface OptionType {
   label: string;
 }
 
-interface TodoProps {
-  todo: TodoType;
-  onClick: (todo: TodoType) => void; // onClick プロパティの型定義を追加
+interface TaskProps {
+  task: TaskType;
+  onClick: (task: TaskType) => void; // onClick プロパティの型定義を追加
 }
 
-const Todo: React.FC<TodoProps> = ({ todo }) => {
+const Task: React.FC<TaskProps> = ({ task }) => {
 
   // Date オブジェクトを年月日形式でフォーマット
   const formattedCreatedAt = new Intl.DateTimeFormat('ja-JP', {
   year: 'numeric',
   month: '2-digit',
   day: '2-digit'
-}).format(new Date(todo.created_at));
+}).format(new Date(task.created_at));
 
-  const { data, setData, patch, delete: destroy, processing } = useForm(todo);
+  const { data, setData, patch, delete: destroy, processing } = useForm(task);
 
   // 現在のページ番号を取得
   useEffect(() => {
@@ -48,7 +48,7 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
     // option が null または undefined でないことを確認する
     if (option) {
       data.progress = option.value;
-      patch(route('todo.update', { id: todo.id }), {
+      patch(route('task.update', { id: task.id }), {
         preserveScroll: true, // スクロール位置を保持
       });
     }
@@ -58,7 +58,7 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
     e.preventDefault();
     const queryParams = new URLSearchParams(window.location.search);
     const page = queryParams.get('page') || '1';
-    destroy(route('todo.destroy', todo.id, page));
+    destroy(route('task.destroy', task.id, page));
   };
 
   const options = [
@@ -80,7 +80,7 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
   return (
     <tr className={`border border-white ${data.progress === 1 ? "bg-yellow-300" : data.progress === 2 ? "line-through bg-gray-300" : "bg-blue-300"}`}>
       <td className="p-2 overflow-hidden text-overflow-ellipsis whitespace-nowrap cursor-pointer" onClick={handleOpenModal}>
-        {todo.title}
+        {task.title}
       </td>
       <td className="p-2">
         <Select
@@ -90,7 +90,7 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
           onChange={update}
         />
       </td>
-      <td className="p-2 text-sm text-center">{todo.due_date}</td>
+      <td className="p-2 text-sm text-center">{task.due_date}</td>
       <td className="p-2 text-center">
         <form onSubmit={destroySubmit}>
           <DangerButton className="bg-red-500" processing={processing}>削除</DangerButton>
@@ -101,8 +101,8 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
         <Modal show={showModal} onClose={handleCloseModal}>
           <div className="modal w-[30rem] min-h-[10rem] overflow-y-auto">
             <div className="break-words">
-              <p><span className="font-bold">期日：</span>{todo.due_date}</p>
-              <p><span className="font-bold">todo：</span>{todo.title}</p>
+              <p><span className="font-bold">期日：</span>{task.due_date}</p>
+              <p><span className="font-bold">task：</span>{task.title}</p>
             </div>
           </div>
         </Modal>
@@ -111,4 +111,4 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
   );
 };
 
-export default Todo;
+export default Task;

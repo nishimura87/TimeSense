@@ -5,7 +5,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-use \App\Http\Controllers\TodoController;
+use \App\Http\Controllers\TaskController;
+use \App\Http\Controllers\ScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('todo', TodoController::class)
+Route::resource('task', TaskController::class)
+    ->only(['index', 'store', 'update', 'destroy'])
+    ->middleware(['auth', 'verified']);
+
+Route::resource('schedule', ScheduleController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
 

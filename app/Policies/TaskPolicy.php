@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Todo;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class TodoPolicy
+class TaskPolicy
 {
     use HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class TodoPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Todo  $todo
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Todo $todo)
+    public function view(User $user, Task $task)
     {
         //
     }
@@ -48,34 +48,34 @@ class TodoPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Todo  $todo
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Todo $todo)
+    public function update(User $user, Task $task)
     {
-        return $todo->user()->is($user); 
+        return $task->user()->is($user); 
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Todo  $todo
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Todo $todo)
+    public function delete(User $user, Task $task)
     {
-        return $this->update($user, $todo);
+        return $this->update($user, $task);
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Todo  $todo
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Todo $todo)
+    public function restore(User $user, Task $task)
     {
         //
     }
@@ -84,10 +84,10 @@ class TodoPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Todo  $todo
+     * @param  \App\Models\Task  $task
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Todo $todo)
+    public function forceDelete(User $user, Task $task)
     {
         //
     }

@@ -12,7 +12,7 @@ interface FormData {
   page: string;
 }
 
-export default function SubmitTodo() {
+export default function SubmitTask() {
   // useFormのジェネリクスを使用してフォームデータの型を指定
   const { data, setData, post, processing, reset, errors } = useForm<FormData>({
     title: '',
@@ -42,7 +42,7 @@ export default function SubmitTodo() {
     due_date: dueDate ? dueDate.toISOString().substring(0, 10) : null
   };
 
-  post(route('todo.store',), {
+  post(route('task.store',), {
     data: formattedData,
     onSuccess: () => reset(),
   });
@@ -55,7 +55,7 @@ export default function SubmitTodo() {
         <input
           type="text"
           value={data.title}
-          placeholder="やること"
+          placeholder="タスク"
           className="w-8/12 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
           onChange={e => setData('title', e.target.value)}
         />
