@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import jaLocale from '@fullcalendar/core/locales/ja';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import TaskModal from '@/Components/TaskModal';
 
 interface MyDateSelectArg {
   start: Date;
@@ -19,34 +20,54 @@ interface MyDateSelectArg {
 }
 
 function CalendarPage() {
+  // eventsステートとそれを更新するsetEvents関数を定義
+  const [events, setEvents] = useState([]);
+  const [modalShow, setModalShow] = useState(false); // モーダルの表示状態
+  const [selectedRange, setSelectedRange] = useState({ start: '', end: '' }); // 選択した日付範囲
 
+  useEffect(() => {
+    // APIからスケジュールデータを取得し、eventsステートを更新する
+    const fetchEvents = async () => {
+      const response = await fetch('/api/schedules', {
+      headers: {
+        'Accept': 'application/json', // サーバーにJSONレスポンスを期待していることを示す
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+      const data = await response.json();
+
+      // データを整形し、setEventsを使ってeventsステートを更新
+      const formattedEvents = data.map((event) => ({
+        title: event.task.title,
+        start: event.start_date,
+        end: event.end_date,
+      }));
+      setEvents(formattedEvents);
+    };
+
+    fetchEvents();
+  }, []);
+  
   const handleDateSelect = (selectInfo: MyDateSelectArg) => {
-    const startDate = new Date(selectInfo.startStr);
-    const endDate = new Date(selectInfo.endStr);
-    
-    const formatter = new Intl.DateTimeFormat('ja-JP', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    }).format;
-
-  const formatDateTime = (date:Date) => {
-    // Intl.DateTimeFormatでのフォーマット後、日付と時刻の間にTが入るのを修正
-    return formatter(date).replace(/\//g, '-').replace(/(\d{2}):(\d{2}):(\d{2})/, ' $1:$2:$3');
+    setSelectedRange({ start: selectInfo.startStr, end: selectInfo.endStr });
+    setModalShow(true); // モーダルを表示
+    selectInfo.view.calendar.unselect();
   };
 
-  const formattedStartDate = formatDateTime(startDate);
-  const formattedEndDate = formatDateTime(endDate);
+  const handleModalClose = () => {
+    setModalShow(false);
+  };
 
-  // フォーマットされた日付でアラート表示
-  alert(`日時: ${formattedStartDate} から ${formattedEndDate}`);
-    const calendarApi = selectInfo.view.calendar;
-
-    calendarApi.unselect(); // 選択した部分の選択を解除
+  const handleModalSave = (title: string, description: string, start: string, end: string) => {
+    console.log(title);
+    console.log(description);
+    console.log(start);
+    console.log(end);
+    // 処理内容
+    setModalShow(false);
   };
 
   return (
@@ -61,11 +82,18 @@ function CalendarPage() {
           center: 'title',
           right: 'timeGridWeek,timeGridDay',
         }}
-        events={'https://fullcalendar.io/api/demo-feeds/events.json'}
+        events={events} // stateから取得したイベントデータを使用
         select={handleDateSelect}
         selectable={true}
         selectMirror={true}
         allDaySlot={false}
+      />
+      <TaskModal
+        isOpen={modalShow}
+        onClose={handleModalClose}
+        onSave={handleModalSave}
+        start={selectedRange.start}
+        end={selectedRange.end} 
       />
     </div>
   );

@@ -1,0 +1,13 @@
+div.relative>input:focus {
+  border-bottom: 2px solid blue !important;
+}
+
+div.relative>textarea:focus {
+  border-bottom: 2px solid blue !important;
+}
+
+.custom-select {
+  appearance: none !important;
+  -moz-appearance: none !important;
+  -webkit-appearance: none !important;
+}

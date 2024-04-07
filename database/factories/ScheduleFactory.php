@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 use App\Models\Schedule;
+use App\Models\User;
 use App\Models\Task;
 
 /**
@@ -31,6 +32,7 @@ class ScheduleFactory extends Factory
         $end_date = (clone $start_date)->add(new \DateInterval('PT' . $hoursToAdd . 'H'));
         
         return [
+            'user_id' => USER::all()->random()->id,
             'task_id' => Task::all()->random()->id,
             'start_date' => $start_date->format('Y-m-d H:i:s'), // フォーマットして文字列として格納
             'end_date' => $end_date->format('Y-m-d H:i:s'), // フォーマットして文字列として格納

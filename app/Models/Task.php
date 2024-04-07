@@ -16,8 +16,8 @@ class Task extends Model
         'due_date'
     ];
 
-    public function task(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Task::class);
-    }                    
+        return $this->belongsTo(User::class);
+    }
 }

@@ -41,8 +41,8 @@ export default function Authenticated({ auth, header, children }: Props) {
                                     タスク
                                 </NavLink>
                                 <NavLink
-                                    href={route('schedule.index')}
-                                    active={route().current('schedule.index')}
+                                    href={route('schedules.index')}
+                                    active={route().current('schedules.index')}
                                     >
                                     カレンダー
                                 </NavLink>

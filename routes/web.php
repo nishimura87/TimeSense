@@ -48,8 +48,10 @@ Route::resource('task', TaskController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
 
-Route::resource('schedule', ScheduleController::class)
+Route::resource('schedules', ScheduleController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
+
+Route::get('/api/schedules', [ScheduleController::class, 'index']);
 
 require __DIR__.'/auth.php';

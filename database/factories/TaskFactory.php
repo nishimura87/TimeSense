@@ -24,7 +24,7 @@ class TaskFactory extends Factory
 
         return [
             'user_id' => User::all()->random()->id,
-            'title' => $faker->realText,
+            'title' => $faker->realText(20),
             'progress' => $faker->numberBetween(0, 2),
             'due_date' => $faker->dateTimeBetween('+0 days', '+1 month')->format('Y-m-d'),
         ];
