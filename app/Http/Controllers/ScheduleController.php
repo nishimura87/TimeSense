@@ -46,24 +46,21 @@ class ScheduleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            // 他の必要なバリデーションルールを追加
-            'description' => 'nullable|string',
+        // スケジュール情報のバリデーション
+        $validatedSchedule = $request->validate([
             'start' => 'required|date',
-            'end' => 'required|date',
+            'end' => 'required|date|after_or_equal:start',
         ]);
 
-        $task = new Task();
-        $task->title = $request->title;
-        $task->description = $request->description; // もしTasksテーブルにdescriptionカラムがある場合
-        $task->start = $request->start; // もしstartカラムがある場合
-        $task->end = $request->end; // もしendカラムがある場合
-        $task->save();
+        // スケジュールの作成
+        $schedule = Schedule::create([
+            'start_time' => $validatedSchedule['start'],
+            'end_time' => $validatedSchedule['end'],
+        ]);
 
-        return response()->json($task, 201);
+        return response()->json(['schedule_id' => $schedule->id], 201);
     }
 
     /**

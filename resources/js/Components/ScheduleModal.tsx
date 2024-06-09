@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "../../css/TaskModal.css";
 import Select from "react-select";
 
-interface TaskModalProps {
+interface ScheduleModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (taskName: string, taskDescription: string, start: string, end: string) => void;
@@ -11,7 +11,7 @@ interface TaskModalProps {
     end: string;
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, onSave, start, end }) => {
+const TaskModal: React.FC<ScheduleModalProps> = ({ isOpen, onClose, onSave, start, end }) => {
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
     const [inputStart, setInputStart] = useState<{label: string, value: string}>({label: '', value: ''});
@@ -83,12 +83,12 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, onSave, start, e
     };
 
     const customStyles = {
-    control: (base, state) => ({
-        ...base,
-        boxShadow: "none"
-        // You can also use state.isFocused to conditionally style based on the focus state
-    })
-};
+        control: (base, state) => ({
+            ...base,
+            boxShadow: "none"
+            // You can also use state.isFocused to conditionally style based on the focus state
+        })
+    };
 
     if (!isOpen) return null;
 

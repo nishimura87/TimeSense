@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('schedules', function (Blueprint $table) {
+        Schema::create('task_schedule', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
-            $table->string('memo',255)->nullable;
+            $table->foreignId('task_id')->constrained()->onDelete('cascade');
+            $table->foreignId('schedule_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('task_schedule');
     }
 };
