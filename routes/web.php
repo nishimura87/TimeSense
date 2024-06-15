@@ -43,22 +43,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('task', TaskController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    Route::get('/work-times/{task_id}', [WorkTimeController::class, 'show'])->name('work-times.show');
+    Route::put('/work-times/{id}', [WorkTimeController::class, 'update'])->name('work-times.update');
+
+    Route::resource('schedules', ScheduleController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::get('/api/schedules', [ScheduleController::class, 'index']);
+    Route::get('/api/schedules/store', [ScheduleController::class, 'schedules.store']);
 });
-
-Route::resource('task', TaskController::class)
-    ->only(['index', 'store', 'update', 'destroy'])
-    ->middleware(['auth', 'verified']);
-
-Route::get('/work-times/{task_id}', [WorkTimeController::class, 'show'])->name('work-times.show');
-Route::put('/work-times/{id}', [WorkTimeController::class, 'update'])->name('work-times.update');
-
-Route::resource('schedules', ScheduleController::class)
-    ->only(['index', 'store', 'update', 'destroy'])
-    ->middleware(['auth', 'verified']);
-
-Route::get('/api/schedules', [ScheduleController::class, 'index']);
-Route::get('/api/schedules/store', [ScheduleController::class, 'schedules.store']);
-
-
 
 require __DIR__ . '/auth.php';

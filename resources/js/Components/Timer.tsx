@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlay, FaPause, FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
+import { TaskProgress } from '../Constants/constants';
 
 interface TimerProps {
     taskId: number;
@@ -12,7 +13,7 @@ const Timer: React.FC<TimerProps> = ({ taskId, progress }) => {
     const [time, setTime] = useState<number | null>(null); // 初期値をnullに設定
     const [recordId, setRecordId] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true); // ローディング状態を追加
-    const [isTaskCompleted] = useState(progress === 2); // タスクの完了状態
+    const [isTaskCompleted] = useState(progress === TaskProgress.DONE);
 
     useEffect(() => {
         const fetchData = async () => {
