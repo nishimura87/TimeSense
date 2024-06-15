@@ -62,51 +62,52 @@ function CalendarPage() {
     };
 
     const handleModalSave = async (title: string, description: string, start: string, end: string, setModalShow: (show: boolean) => void) => {
-        const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
-        const csrfToken = csrfTokenElement ? csrfTokenElement.getAttribute('content') : '';
+    console.log(title);
+    console.log(description);
+    console.log(start);
+    console.log(end);
 
-        // APIエンドポイントにデータを送信
-        try {
-            // スケジュールの保存
-            const scheduleResponse = await fetch('/api/schedules', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken || '' // csrfTokenがnullの場合に空文字列を設定
-            },
-            body: JSON.stringify({ start, end })
-            });
+    const csrfTokenElement = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfTokenElement ? csrfTokenElement.getAttribute('content') : '';
 
-            if (!scheduleResponse.ok) {
-            console.error('Failed to add schedule');
-            return;
-            }
-
-            const scheduleData = await scheduleResponse.json();
-            const scheduleId = scheduleData.schedule_id;
-
-            // タスクの保存
-            const taskResponse = await fetch('/api/tasks', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken || '' // csrfTokenがnullの場合に空文字列を設定
-            },
-            body: JSON.stringify({ title, schedule_id: scheduleId })
-            });
-
-            if (taskResponse.ok) {
-            console.log('Task added successfully');
-            setModalShow(false);
-            } else {
-            console.error('Failed to add task');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
+    // 日付をISO 8601形式に変換するための関数
+    const convertToISO = (dateString: string): string | null => {
+        const date = new Date(dateString);
+        return isNaN(date.getTime()) ? null : date.toISOString();
     };
+
+    const formattedStart = convertToISO(start);
+    const formattedEnd = convertToISO(end);
+
+    if (!formattedStart || !formattedEnd) {
+        console.error('Invalid date values:', { start, end });
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/schedules/store', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken || ''
+            },
+            body: JSON.stringify({ title, start: formattedStart, end: formattedEnd })
+        });
+
+        if (response.ok) {
+            console.log('Schedule and Task added successfully');
+            setModalShow(false);
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to add schedule and task:', errorData.errors);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+
 
     return (
         <div className="w-4/5">

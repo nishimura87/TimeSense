@@ -20,6 +20,6 @@
             "@/*": ["resources/js/*"]
         }
     },
-    "include": ["resources/js/**/*"],
+    "include": ["resources/js/**/*", "resources/js/chakraImports.ts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

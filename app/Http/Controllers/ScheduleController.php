@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Schedule;
+use App\Models\Task;
 
 class ScheduleController extends Controller
 {
@@ -17,8 +18,8 @@ class ScheduleController extends Controller
     {
         $userId = auth()->id();
         $schedules = Schedule::with(['task'])
-                            ->where('user_id', $userId)
-                            ->get();
+            ->where('user_id', $userId)
+            ->get();
 
         if ($request->wantsJson()) {
             // APIリクエストの場合はJSONを返す
@@ -52,6 +53,7 @@ class ScheduleController extends Controller
         $validatedSchedule = $request->validate([
             'start' => 'required|date',
             'end' => 'required|date|after_or_equal:start',
+            'title' => 'required|string|max:255',
         ]);
 
         // スケジュールの作成
@@ -60,7 +62,13 @@ class ScheduleController extends Controller
             'end_time' => $validatedSchedule['end'],
         ]);
 
-        return response()->json(['schedule_id' => $schedule->id], 201);
+        // タスクの作成
+        $task = Task::create(['title' => $validatedSchedule['title']]);
+
+        // 中間テーブルでタスクとスケジュールを紐づけ
+        $task->schedules()->attach($schedule->id);
+
+        return response()->json(['message' => 'Schedule and Task created successfully'], 201);
     }
 
     /**

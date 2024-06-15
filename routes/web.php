@@ -7,6 +7,7 @@ use Inertia\Inertia;
 
 use \App\Http\Controllers\TaskController;
 use \App\Http\Controllers\ScheduleController;
+use \App\Http\Controllers\WorkTimeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,10 +49,15 @@ Route::resource('task', TaskController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
 
+Route::post('/work-times', [WorkTimeController::class, 'store'])->name('work-times.store');
+
 Route::resource('schedules', ScheduleController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
 
 Route::get('/api/schedules', [ScheduleController::class, 'index']);
+Route::get('/api/schedules/store', [ScheduleController::class, 'schedules.store']);
 
-require __DIR__.'/auth.php';
+
+
+require __DIR__ . '/auth.php';

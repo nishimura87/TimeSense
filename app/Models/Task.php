@@ -25,4 +25,9 @@ class Task extends Model
     {
         return $this->hasMany(Schedule::class);
     }
+
+    public function workTimes()
+    {
+        return $this->hasMany(WorkTime::class);
+    }
 }

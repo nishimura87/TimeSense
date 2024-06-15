@@ -22,8 +22,8 @@ class Schedule extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function task(): BelongsTo
+    public function tasks()
     {
-        return $this->belongsTo(Task::class);
+        return $this->belongsToMany(Task::class);
     }
 }

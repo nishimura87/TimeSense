@@ -55,16 +55,16 @@ const TaskModal: React.FC<ScheduleModalProps> = ({ isOpen, onClose, onSave, star
     const generateTimeOptions = (type: 'start' | 'end')  => {
         const options = [];
         for (let hour = 0; hour < 24; hour++) {
-        for (let minute = 0; minute < 60; minute += 15) {
-            const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-            const timeOption = { label: timeValue, value: timeValue };
-            if (type === 'start' && inputEnd.value && timeValue >= inputEnd.value) {
-            continue; // end時間より後の時間をstartの選択肢から除外
-            } else if (type === 'end' && inputStart.value && timeValue <= inputStart.value) {
-            continue; // start時間より前の時間をendの選択肢から除外
+            for (let minute = 0; minute < 60; minute += 15) {
+                const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                const timeOption = { label: timeValue, value: timeValue };
+                if (type === 'start' && inputEnd.value && timeValue >= inputEnd.value) {
+                continue; // end時間より後の時間をstartの選択肢から除外
+                } else if (type === 'end' && inputStart.value && timeValue <= inputStart.value) {
+                continue; // start時間より前の時間をendの選択肢から除外
+                }
+                options.push(timeOption);
             }
-            options.push(timeOption);
-        }
         }
         return options;
     };
