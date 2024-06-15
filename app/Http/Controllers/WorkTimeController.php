@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\WorkTime;
+use Inertia\Inertia;
 
 class WorkTimeController extends Controller
 {
@@ -19,6 +20,6 @@ class WorkTimeController extends Controller
         $workTime->time = $validatedData['time'];
         $workTime->save();
 
-        return response()->json(['message' => 'Time saved successfully'], 201);
+        return redirect()->back()->with('success', 'Time saved successfully');
     }
 }

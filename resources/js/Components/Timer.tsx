@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FaPlay, FaPause } from 'react-icons/fa';
-import { useForm } from '@inertiajs/inertia-react';
+import axios from 'axios';
 
 const Timer = ({ taskId }: { taskId: number }) => {
     const [isRunning, setIsRunning] = useState(false);
     const [time, setTime] = useState(0);
-    const { post, reset } = useForm({ task_id: taskId, time });
 
     useEffect(() => {
         let timer: ReturnType<typeof setInterval> | null = null;
@@ -21,12 +20,17 @@ const Timer = ({ taskId }: { taskId: number }) => {
         };
     }, [isRunning]);
 
-    const handleStartPause = () => {
+    const handleStartPause = async () => {
         if (isRunning) {
-            post(route('work-times.store'), {
-                data: { task_id: taskId, time },
-                onSuccess: () => reset(),
-            });
+            // タイマーが動作中なら、停止して時間をポストする
+            try {
+                await axios.post(route('work-times.store'), {
+                    task_id: taskId,
+                    time: time
+                });
+            } catch (error) {
+                console.error("Failed to save time:", error);
+            }
         }
         setIsRunning(!isRunning);
     };
