@@ -4,6 +4,7 @@ import Select, { SingleValue } from 'react-select';
 import DangerButton from "@/Components/DangerButton";
 import Modal from './Modal';
 import Timer from './Timer';
+import { TaskProgress } from '../Constants/constants';
 
 // task オブジェクトの型定義
 interface TaskType {
@@ -72,7 +73,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
 
 
     return (
-        <tr className={`border border-white ${data.progress === 1 ? "bg-yellow-300" : data.progress === 2 ? "line-through bg-gray-300" : "bg-blue-300"}`}>
+        <tr className={`border border-white ${data.progress === TaskProgress.IN_PROGRESS ? "bg-yellow-300" : data.progress === TaskProgress.DONE ? "line-through bg-gray-300" : "bg-blue-300"}`}>
             <td className="p-2 overflow-hidden text-overflow-ellipsis whitespace-nowrap cursor-pointer" onClick={handleOpenModal}>
                 {task.title}
             </td>

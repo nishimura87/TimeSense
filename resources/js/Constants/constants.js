@@ -1,11 +1,11 @@
 export const TaskProgress = {
-    NOT_STARTED: 1,
-    IN_PROGRESS: 2,
-    DONE: 3
+    NOT_STARTED: 0,
+    IN_PROGRESS: 1,
+    DONE: 2
 };
 
 export const TaskProgressNames = {
-    1: 'Not Started',
-    2: 'In Progress',
-    3: 'Completed'
+    0: 'Not Started',
+    1: 'In Progress',
+    2: 'Completed'
 };
