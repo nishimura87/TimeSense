@@ -86,7 +86,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
             </td>
             <td className="p-2 text-sm text-center">{task.due_date}</td>
             <td>
-                <Timer taskId={Number(task.id)} />
+                <Timer taskId={Number(task.id)} progress={task.progress} />
             </td>
             <td className="p-2 text-center">
                 <form onSubmit={destroySubmit}>

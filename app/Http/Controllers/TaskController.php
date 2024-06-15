@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\WorkTime;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -52,7 +53,13 @@ class TaskController extends Controller
 
         $validated['due_date'] = $validated['due_date'] ?? null;
 
-        $request->user()->tasks()->create($validated);
+        $task = $request->user()->tasks()->create($validated);
+
+        // WorkTimeのレコードを作成
+        WorkTime::create([
+            'task_id' => $task->id,
+            'time' => 0, // 初期値として0を設定
+        ]);
 
         // リクエストから現在のページ番号を取得、デフォルトは1
         $page = $request->input('page', 1);

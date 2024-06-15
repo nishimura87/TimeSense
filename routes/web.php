@@ -49,7 +49,8 @@ Route::resource('task', TaskController::class)
     ->only(['index', 'store', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
 
-Route::post('/work-times', [WorkTimeController::class, 'store'])->name('work-times.store');
+Route::get('/work-times/{task_id}', [WorkTimeController::class, 'show'])->name('work-times.show');
+Route::put('/work-times/{id}', [WorkTimeController::class, 'update'])->name('work-times.update');
 
 Route::resource('schedules', ScheduleController::class)
     ->only(['index', 'store', 'update', 'destroy'])

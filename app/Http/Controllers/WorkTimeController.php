@@ -8,18 +8,26 @@ use Inertia\Inertia;
 
 class WorkTimeController extends Controller
 {
-    public function store(Request $request)
+    // 特定の作業時間を取得する
+    public function show($taskId)
     {
-        $validatedData = $request->validate([
-            'task_id' => 'required|exists:tasks,id',
-            'time' => 'required|integer'
+        $workTime = WorkTime::where('task_id', $taskId)->first();
+
+        if ($workTime) {
+            return response()->json($workTime);
+        }
+
+        return response()->json(null, 404);
+    }
+
+    // 特定の作業時間を更新する
+    public function update(Request $request, $id)
+    {
+        $workTime = WorkTime::findOrFail($id);
+        $workTime->update([
+            'time' => $request->time,
         ]);
 
-        $workTime = new WorkTime;
-        $workTime->task_id = $validatedData['task_id'];
-        $workTime->time = $validatedData['time'];
-        $workTime->save();
-
-        return redirect()->back()->with('success', 'Time saved successfully');
+        return response()->json($workTime);
     }
 }
