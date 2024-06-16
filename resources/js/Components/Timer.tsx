@@ -85,21 +85,24 @@ const Timer: React.FC<TimerProps> = ({ taskId, progress }) => {
     }
 
     return (
-        <div className="flex items-center justify-between px-2">
-            <div className="bg-gray-100 px-2 h-10 flex items-center justify-center text-sm rounded">
-                {time !== null ? new Date(time * 1000).toISOString().substr(11, 8) : 'Loading...'}
-            </div>
-            {!isTaskCompleted && (
-                <button
-                    className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600"
-                    aria-label={isRunning ? "Pause timer" : "Start timer"}
-                    onClick={handleStartPause}
-                >
-                    {isRunning ? <FaPause className="w-3 h-3" /> : <FaPlay className="w-3 h-3" />}
-                </button>
-            )}
+    <div className="flex items-center justify-center px-2">
+        <div className="pr-2">
+            {time !== null ? new Date(time * 1000).toISOString().substr(11, 8) : 'Loading...'}
         </div>
-    );
+        {!isTaskCompleted ? (
+            <button
+                className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600"
+                aria-label={isRunning ? "Pause timer" : "Start timer"}
+                onClick={handleStartPause}
+            >
+                {isRunning ? <FaPause className="w-3 h-3" /> : <FaPlay className="w-3 h-3" />}
+            </button>
+        ) : (
+            <div className="min-w-[28px] min-h-[28px]"></div> // プレースホルダーとして空のdivを配置
+        )}
+    </div>
+);
+
 };
 
 export default Timer;

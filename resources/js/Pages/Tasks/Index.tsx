@@ -45,10 +45,10 @@ export default function Index(props: any) {
                     <thead>
                         <tr>
                             <th className="w-4/12 pb-2">タスク</th>
-                            <th className="w-3/12 pb-2">進捗</th>
+                            <th className="w-2/12 pb-2">進捗</th>
                             <th className="w-2/12 pb-2">期日</th>
-                            <th className="w-2/12 pb-2">工数計測</th>
-                            <th className="w-2/12 pb-2">削除</th>
+                            <th className="w-1/12 pb-2">工数計測</th>
+                            <th className="w-1/12 pb-2">削除</th>
                         </tr>
                     </thead>
                     <tbody>

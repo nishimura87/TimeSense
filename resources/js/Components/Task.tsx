@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from "@inertiajs/react";
 import Select, { SingleValue } from 'react-select';
 import DangerButton from "@/Components/DangerButton";
-import Modal from './Modal';
 import Timer from './Timer';
 import { TaskProgress } from '../Constants/constants';
+import { FaTrash } from 'react-icons/fa';
 
 // task オブジェクトの型定義
 interface TaskType {
@@ -39,7 +39,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         }
     }, [data.page, setData]);
 
-    const update = (option: SingleValue<OptionType>) => {
+    const updateProgress = (option: SingleValue<OptionType>) => {
         // option が null または undefined でないことを確認する
         if (option) {
         data.progress = option.value;
@@ -47,6 +47,13 @@ const Task: React.FC<TaskProps> = ({ task }) => {
             preserveScroll: true, // スクロール位置を保持
         });
         }
+    }
+
+    const updateDueDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setData('due_date', e.target.value);
+        patch(route('task.update', { id: task.id }), {
+            preserveScroll: true, // スクロール位置を保持
+        });
     }
 
     const destroySubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,19 +69,9 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         { value: 2, label: '完了'},
     ]
 
-    // モーダル表示状態の管理
-    const [showModal, setShowModal] = useState(false);
-
-    // モーダルを開く関数
-    const handleOpenModal = () => setShowModal(true);
-
-    // モーダルを閉じる関数
-    const handleCloseModal = () => setShowModal(false);
-
-
     return (
         <tr className={`border border-white ${data.progress === TaskProgress.IN_PROGRESS ? "bg-yellow-300" : data.progress === TaskProgress.DONE ? "line-through bg-gray-300" : "bg-blue-300"}`}>
-            <td className="p-2 overflow-hidden text-overflow-ellipsis whitespace-nowrap cursor-pointer" onClick={handleOpenModal}>
+            <td className="p-2 overflow-hidden text-overflow-ellipsis whitespace-nowrap">
                 {task.title}
             </td>
             <td className="p-2">
@@ -82,27 +79,26 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                 className="mx-2 text-center font-bold text-sm"
                 options={options}
                 defaultValue={options[data.progress]}
-                onChange={update}
+                onChange={updateProgress}
                 />
             </td>
-            <td className="p-2 text-sm text-center">{task.due_date}</td>
+            <td className="p-2 text-sm text-center">
+                <input
+                    type="date"
+                    value={data.due_date}
+                    onChange={updateDueDate}
+                    className="border rounded p-1 text-center"
+                />
+            </td>
             <td>
                 <Timer taskId={Number(task.id)} progress={task.progress} />
             </td>
-            <td className="p-2 text-center">
+            <td className="p-1 text-center">
                 <form onSubmit={destroySubmit}>
-                <DangerButton className="bg-red-500" processing={processing}>削除</DangerButton>
+                    <DangerButton className="bg-red-500" processing={processing}>
+                        <FaTrash />
+                    </DangerButton>
                 </form>
-            </td>
-            <td>
-                <Modal show={showModal} onClose={handleCloseModal}>
-                    <div className="modal w-[30rem] min-h-[10rem] overflow-y-auto">
-                        <div className="break-words">
-                        <p><span className="font-bold">期日：</span>{task.due_date}</p>
-                        <p><span className="font-bold">task：</span>{task.title}</p>
-                        </div>
-                    </div>
-                </Modal>
             </td>
         </tr>
     );
