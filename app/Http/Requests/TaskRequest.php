@@ -25,6 +25,7 @@ class TaskRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
+            'progress' => 'required|integer',
             'due_date' => 'nullable|date'
         ];
     }
@@ -33,7 +34,8 @@ class TaskRequest extends FormRequest
     {
         return [
             'title' => 'タスク',
-            'due_date' => '期日', // 他のフィールドも同様にカスタマイズできます
+            'progress' => '進捗',
+            'due_date' => '期日', 
         ];
     }
 }

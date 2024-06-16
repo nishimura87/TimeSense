@@ -5,6 +5,10 @@ import DangerButton from "@/Components/DangerButton";
 import Timer from './Timer';
 import { TaskProgress } from '../Constants/constants';
 import { FaTrash } from 'react-icons/fa';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Inertia } from "@inertiajs/inertia";
+// import '../../css/customStyle.css';
 
 // task オブジェクトの型定義
 interface TaskType {
@@ -29,6 +33,17 @@ interface TaskProps {
 const Task: React.FC<TaskProps> = ({ task }) => {
 
     const { data, setData, patch, delete: destroy, processing } = useForm(task);
+    const [title, setTitle] = useState(task.title || '');
+    const [dueDate, setDueDate] = useState<Date | null>(task.due_date ? new Date(task.due_date) : null);
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.target.value);
+    };
+
+    const handleTitleBlur = () => {
+        updateTitle(title);
+    };
+
 
     // 現在のページ番号を取得
     useEffect(() => {
@@ -39,22 +54,41 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         }
     }, [data.page, setData]);
 
+    const updateTitle = async (title: string) => {
+        try {
+            await Inertia.patch(route('task.update', { id: task.id }), {
+                title: title,
+                preserveScroll: true,
+            });
+        } catch (error) {
+            console.error('Failed to update title:', error);
+        }
+    };
+
     const updateProgress = (option: SingleValue<OptionType>) => {
         // option が null または undefined でないことを確認する
         if (option) {
-        data.progress = option.value;
-        patch(route('task.update', { id: task.id }), {
-            preserveScroll: true, // スクロール位置を保持
-        });
+            data.progress = option.value;
+            patch(route('task.update', { id: task.id }), {
+                preserveScroll: true, // スクロール位置を保持
+            });
         }
     }
 
-    const updateDueDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setData('due_date', e.target.value);
-        patch(route('task.update', { id: task.id }), {
-            preserveScroll: true, // スクロール位置を保持
-        });
-    }
+    const updateDueDate = async (date: Date | null) => {
+        if (date) {
+            setDueDate(date); // ローカル状態を更新
+
+            try {
+                await Inertia.patch(route('task.update', { id: task.id }), {
+                    due_date: date.toISOString().split('T')[0], // YYYY-MM-DD形式に変換
+                    preserveScroll: true,
+                });
+            } catch (error) {
+                console.error('Failed to update due date:', error);
+            }
+        }
+    };
 
     const destroySubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -72,22 +106,34 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     return (
         <tr className={`border border-white ${data.progress === TaskProgress.IN_PROGRESS ? "bg-yellow-300" : data.progress === TaskProgress.DONE ? "line-through bg-gray-300" : "bg-blue-300"}`}>
             <td className="p-2 overflow-hidden text-overflow-ellipsis whitespace-nowrap">
-                {task.title}
+                <input
+                    type="text"
+                    value={title}
+                    onChange={handleTitleChange}
+                    onBlur={handleTitleBlur}
+                    className="border rounded p-1 text-center w-full leading-[28px] border-gray-300"
+                />
             </td>
             <td className="p-2">
                 <Select
-                className="mx-2 text-center font-bold text-sm"
-                options={options}
-                defaultValue={options[data.progress]}
-                onChange={updateProgress}
+                    components={{
+                        IndicatorSeparator: () => null,
+                    }}
+                    className="mx-2 text-center font-bold text-sm cursor-pointer"
+                    classNames={{
+                        control: (state) => (state.isFocused ? 'ring-1 ring-blue-500 ' : ''),
+                    }}
+                    options={options}
+                    defaultValue={options[data.progress]}
+                    onChange={updateProgress}
                 />
             </td>
             <td className="p-2 text-sm text-center">
-                <input
-                    type="date"
-                    value={data.due_date}
+                <DatePicker
+                    selected={dueDate}
                     onChange={updateDueDate}
-                    className="border rounded p-1 text-center"
+                    className="border-gray-300 border rounded p-1 text-center cursor-pointer w-4/5 leading-[28px]"
+                    dateFormat="yyyy-MM-dd"
                 />
             </td>
             <td>

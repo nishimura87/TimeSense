@@ -136,13 +136,19 @@ export default function Authenticated({ auth, header, children }: Props) {
                             href={route("dashboard")}
                             active={route().current("dashboard")}
                         >
-                            Dashboard
+                            Time Sense
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href={route('task.index')}
                             active={route().current('task.index')}
                         >
-                            Task
+                            タスク
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('schedules.index')}
+                            active={route().current('schedules.index')}
+                        >
+                            カレンダー
                         </ResponsiveNavLink>
                     </div>
 

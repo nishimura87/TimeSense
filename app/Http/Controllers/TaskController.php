@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Pagination\Paginator;
 use App\Http\Requests\TaskRequest;
-
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\JsonResponse;
 
 class TaskController extends Controller
 {
@@ -96,14 +96,34 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task): RedirectResponse
+    public function update(TaskRequest $request, Task $task): JsonResponse
     {
         $this->authorize('update', $task);
-        $task->update($request->all());
 
-        $page = $request->input('page', 1);
+        $validated = $request->validated();
 
-        return redirect(route('task.index', ['page' => $page]));
+        // フィールドが存在する場合のみ更新
+        if ($request->has('title')) {
+            $task->title = $validated['title'];
+        }
+        if ($request->has('progress')) {
+            $task->title = $validated['progress'];
+        }
+        if ($request->has('due_date')) {
+            $task->due_date = $validated['due_date'];
+        }
+
+        $task->save();
+
+        // Inertiaリクエストへのレスポンス
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Task updated successfully',
+                'task' => $task
+            ]);
+        }
+
+        return Redirect::route('task.index')->with('message', 'Task updated successfully');
     }
 
     /**
