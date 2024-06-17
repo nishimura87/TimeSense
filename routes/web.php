@@ -33,11 +33,9 @@ use \App\Http\Controllers\WorkTimeController;
 //     return view('app');
 // });
 
-Route::inertia('/home', 'app');
-
 Route::get('/', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return Inertia::render('Home');
+})->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
