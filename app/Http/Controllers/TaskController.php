@@ -96,34 +96,19 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(TaskRequest $request, Task $task): JsonResponse
+    public function update(TaskRequest $request, Task $task)
     {
         $this->authorize('update', $task);
 
-        $validated = $request->validated();
-
-        // フィールドが存在する場合のみ更新
-        if ($request->has('title')) {
-            $task->title = $validated['title'];
-        }
-        if ($request->has('progress')) {
-            $task->title = $validated['progress'];
-        }
-        if ($request->has('due_date')) {
-            $task->due_date = $validated['due_date'];
-        }
+        // バリデートされたデータを一括で割り当てる
+        $task->fill($request->validated());
 
         $task->save();
 
-        // Inertiaリクエストへのレスポンス
-        if ($request->wantsJson()) {
-            return response()->json([
-                'message' => 'Task updated successfully',
-                'task' => $task
-            ]);
-        }
-
-        return Redirect::route('task.index')->with('message', 'Task updated successfully');
+        return Inertia::render('Tasks/Edit', [
+            'message' => 'Task updated successfully',
+            'task' => $task
+        ]);
     }
 
     /**

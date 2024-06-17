@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Authenticated from "@/Layouts/Authenticated";
-import SubmitTask from '@/Components/Submittask';
-import Task from '@/Components/task';
+import SubmitTask from '@/Components/SubmitTask';
+import Task from '@/Components/Task';
 import ReactPaginate from 'react-paginate';
 import { Inertia } from '@inertiajs/inertia';
 import ErrorMessages from '@/Components/ErrorMessages';
