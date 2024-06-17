@@ -16,7 +16,7 @@ export default function Index(props: any) {
     const currentTasks = tasks.slice(currentPage * tasksPerPage, (currentPage + 1) * tasksPerPage);
 
     // ページ変更時のハンドラ
-    const handlePageClick = (event:any) => {
+    const handlePageClick = (event: any) => {
         const newPage = event.selected;
         setForcePage(newPage);
         Inertia.visit(`/task?page=${newPage + 1}`);
