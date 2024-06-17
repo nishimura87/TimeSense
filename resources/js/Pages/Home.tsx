@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Head } from "@inertiajs/inertia-react";
 import Authenticated from "@/Layouts/Authenticated";
 import { Link } from "@inertiajs/inertia-react";
 
-export default function Dashboard(props: any) {
+export default function Home(props: any) {
     const isAuthenticated = props.auth.user !== null;
     return (
         <Authenticated
