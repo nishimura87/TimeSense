@@ -19,10 +19,10 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(): Response  
+    public function index(): Response
     {
         // 'created_at'で最新順に並び替えてからページネーションを適用
-        $tasks = \Auth::user()->tasks()->orderBy('created_at', 'desc')->paginate(10); 
+        $tasks = \Auth::user()->tasks()->orderBy('created_at', 'desc')->paginate(10);
 
         return Inertia::render('Tasks/Index', ['tasks' => $tasks]);
     }
@@ -46,10 +46,6 @@ class TaskController extends Controller
     public function store(TaskRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'due_date' => 'nullable|date'
-        ]);
 
         $validated['due_date'] = $validated['due_date'] ?? null;
 
@@ -102,13 +98,9 @@ class TaskController extends Controller
 
         // バリデートされたデータを一括で割り当てる
         $task->fill($request->validated());
-
         $task->save();
 
-        return Inertia::render('Tasks/Edit', [
-            'message' => 'Task updated successfully',
-            'task' => $task
-        ]);
+        return Redirect::route('task.index')->with('message', 'Task updated successfully');
     }
 
     /**

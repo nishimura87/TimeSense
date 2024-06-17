@@ -55,25 +55,32 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     }, [data.page, setData]);
 
     const updateTitle = async (title: string) => {
-        try {
-            await Inertia.patch(route('task.update', { id: task.id }), {
-                title: title,
-                preserveScroll: true,
-            });
-        } catch (error) {
-            console.error('Failed to update title:', error);
+        if (title) {
+            try {
+                await Inertia.patch(route('task.update', { id: task.id }), {
+                    title: title,
+                    preserveScroll: true,
+                });
+            } catch (error) {
+                console.error('Failed to update title:', error);
+            }
         }
     };
 
-    const updateProgress = (option: SingleValue<OptionType>) => {
+    const updateProgress = async (option: SingleValue<{ value: number; label: string }>) => {
         // option が null または undefined でないことを確認する
         if (option) {
             data.progress = option.value;
-            patch(route('task.update', { id: task.id }), {
-                preserveScroll: true, // スクロール位置を保持
-            });
+            try {
+                await Inertia.patch(route('task.update', { id: task.id }), {
+                    progress: option.value,
+                    preserveScroll: true, // スクロール位置を保持
+                });
+            } catch (error) {
+                console.error('Failed to update progress:', error);
+            }
         }
-    }
+    };
 
     const updateDueDate = async (date: Date | null) => {
         if (date) {

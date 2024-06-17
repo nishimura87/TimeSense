@@ -13,7 +13,8 @@ const Timer: React.FC<TimerProps> = ({ taskId, progress }) => {
     const [time, setTime] = useState<number | null>(null); // 初期値をnullに設定
     const [recordId, setRecordId] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true); // ローディング状態を追加
-    const [isTaskCompleted] = useState(progress === TaskProgress.DONE);
+
+    const isTaskCompleted = progress === TaskProgress.DONE;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,7 +41,7 @@ const Timer: React.FC<TimerProps> = ({ taskId, progress }) => {
         };
 
         fetchData();
-    }, [taskId, isTaskCompleted]);
+    }, [taskId, progress]);
 
     useEffect(() => {
         let timer: ReturnType<typeof setInterval> | null = null;
@@ -85,24 +86,23 @@ const Timer: React.FC<TimerProps> = ({ taskId, progress }) => {
     }
 
     return (
-    <div className="flex items-center justify-center px-2">
-        <div className="pr-2">
-            {time !== null ? new Date(time * 1000).toISOString().substr(11, 8) : 'Loading...'}
+        <div className="flex items-center justify-center px-2">
+            <div className="pr-2">
+                {time !== null ? new Date(time * 1000).toISOString().substr(11, 8) : 'Loading...'}
+            </div>
+            {!isTaskCompleted ? (
+                <button
+                    className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600"
+                    aria-label={isRunning ? "Pause timer" : "Start timer"}
+                    onClick={handleStartPause}
+                >
+                    {isRunning ? <FaPause className="w-3 h-3" /> : <FaPlay className="w-3 h-3" />}
+                </button>
+            ) : (
+                <div className="min-w-[28px] min-h-[28px]"></div> // プレースホルダーとして空のdivを配置
+            )}
         </div>
-        {!isTaskCompleted ? (
-            <button
-                className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600"
-                aria-label={isRunning ? "Pause timer" : "Start timer"}
-                onClick={handleStartPause}
-            >
-                {isRunning ? <FaPause className="w-3 h-3" /> : <FaPlay className="w-3 h-3" />}
-            </button>
-        ) : (
-            <div className="min-w-[28px] min-h-[28px]"></div> // プレースホルダーとして空のdivを配置
-        )}
-    </div>
-);
-
+    );
 };
 
 export default Timer;
