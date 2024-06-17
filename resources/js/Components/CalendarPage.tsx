@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import jaLocale from '@fullcalendar/core/locales/ja';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import ScheduleModal from '@/Components/scheduleModal';
+import ScheduleModal from '@/Components/ScheduleModal';
 
 interface MyDateSelectArg {
     start: Date;
