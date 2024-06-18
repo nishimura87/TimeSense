@@ -5,10 +5,9 @@ import DangerButton from "@/Components/DangerButton";
 import Timer from './Timer';
 import { TaskProgress } from '../Constants/constants';
 import { FaTrash } from 'react-icons/fa';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Inertia } from "@inertiajs/inertia";
-// import '../../css/customStyle.css';
+import DatepickerWrapper from "@/Components/DatepickerWrapper";
 
 // task オブジェクトの型定義
 interface TaskType {
@@ -136,11 +135,10 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                 />
             </td>
             <td className="p-2 text-sm text-center">
-                <DatePicker
+                <DatepickerWrapper
                     selected={dueDate}
                     onChange={updateDueDate}
-                    className="border-gray-300 border rounded p-1 text-center cursor-pointer w-4/5 leading-[28px]"
-                    dateFormat="yyyy-MM-dd"
+                    initialDate={new Date()}
                 />
             </td>
             <td>
