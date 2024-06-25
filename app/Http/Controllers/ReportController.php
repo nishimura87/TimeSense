@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Task;
 
 class ReportController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        return Inertia::render('Reports/Index');
+        $tasks = Task::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return Inertia::render('Reports/Index', [
+            'tasks' => $tasks
+        ]);
     }
 
     /**
