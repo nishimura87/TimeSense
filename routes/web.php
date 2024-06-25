@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use \App\Http\Controllers\TaskController;
 use \App\Http\Controllers\ScheduleController;
 use \App\Http\Controllers\WorkTimeController;
+use \App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('schedules', ScheduleController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::get('/api/schedules', [ScheduleController::class, 'index']);
     Route::get('/api/schedules/store', [ScheduleController::class, 'schedules.store']);
+
+    Route::resource('reports', ReportController::class)->only(['index', 'store', 'update', 'destroy']);
 });
 
 require __DIR__ . '/auth.php';

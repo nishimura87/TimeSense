@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ScheduleModel;
+use App\Models\Report;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
-class ScheduleModelController extends Controller
+class ReportController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,7 @@ class ScheduleModelController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Reports/Index');
     }
 
     /**
@@ -41,10 +42,10 @@ class ScheduleModelController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ScheduleModel  $scheduleModel
+     * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function show(ScheduleModel $scheduleModel)
+    public function show(Report $report)
     {
         //
     }
@@ -52,10 +53,10 @@ class ScheduleModelController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ScheduleModel  $scheduleModel
+     * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function edit(ScheduleModel $scheduleModel)
+    public function edit(Report $report)
     {
         //
     }
@@ -64,10 +65,10 @@ class ScheduleModelController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ScheduleModel  $scheduleModel
+     * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ScheduleModel $scheduleModel)
+    public function update(Request $request, Report $report)
     {
         //
     }
@@ -75,10 +76,10 @@ class ScheduleModelController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ScheduleModel  $scheduleModel
+     * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ScheduleModel $scheduleModel)
+    public function destroy(Report $report)
     {
         //
     }

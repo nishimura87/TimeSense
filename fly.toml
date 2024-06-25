@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for timesenseproject-cool-pine-5446 on 2024-06-23T20:41:30+09:00
+# fly.toml app configuration file generated for timesense on 2024-06-23T21:25:21+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'timesenseproject-cool-pine-5446'
+app = 'timesense'
 primary_region = 'nrt'
 console_command = 'php /var/www/html/artisan tinker'
 
@@ -13,7 +13,8 @@ console_command = 'php /var/www/html/artisan tinker'
     PHP_VERSION = '8.1'
 
 [env]
-  APP_ENV = 'production'
+  APP_ENV = 'timesense'
+  DB_CONNECTION = "pgsql"
   LOG_CHANNEL = 'stderr'
   LOG_LEVEL = 'info'
   LOG_STDERR_FORMATTER = 'Monolog\Formatter\JsonFormatter'

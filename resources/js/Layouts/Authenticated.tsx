@@ -39,7 +39,13 @@ export default function Authenticated({ auth, header, children }: Props) {
                                             active={route().current('schedules.index')}
                                         >
                                             カレンダー
-                                        </NavLink>
+                                    </NavLink>
+                                    <NavLink
+                                        href={route('reports.index')}
+                                        active={route().current('reports.index')}
+                                    >
+                                        レポート
+                                    </NavLink>
                                     </div>
                                 )}
                         </div>
@@ -159,6 +165,12 @@ export default function Authenticated({ auth, header, children }: Props) {
                             active={route().current('schedules.index')}
                         >
                             カレンダー
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('reports.index')}
+                            active={route().current('reports.index')}
+                        >
+                            レポート
                         </ResponsiveNavLink>
                     </div>
 
