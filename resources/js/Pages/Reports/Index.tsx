@@ -2,10 +2,11 @@
 
 import React from 'react';
 import Authenticated from "@/Layouts/Authenticated";
-import BarChart from "@/Components/Charts/TaskCount";
+import TaskCount from "@/Components/Charts/TaskCount";
+
 
 interface Task {
-    date: string;
+    month: string;
     count: number;
 }
 
@@ -25,7 +26,7 @@ export default function Index(props: PageProps) {
         <Authenticated auth={props.auth}>
             <div className="flex justify-center w-4/5">
                 <div className="flex">
-                    <BarChart tasks={props.tasks} />
+                    <TaskCount tasks={props.tasks} />
                 </div>
                 
             </div>

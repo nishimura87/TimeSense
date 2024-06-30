@@ -11,10 +11,10 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $tasks = Task::selectRaw('DATE(created_at) as date, COUNT(*) as count')
-            ->groupBy('date')
-            ->orderBy('date')
-            ->get();
+        $tasks = Task::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
+        ->groupBy('month')
+        ->orderBy('month')
+        ->get();
 
         return Inertia::render('Reports/Index', [
             'tasks' => $tasks

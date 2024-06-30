@@ -5,7 +5,7 @@ import { Bar } from 'react-chartjs-2';
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 interface Task {
-    month: string;
+    month: string;  // 修正: dateからmonthに変更
     count: number;
 }
 
@@ -14,7 +14,7 @@ interface BarChartProps {
 }
 
 const BarChart: React.FC<BarChartProps> = ({ tasks }) => {
-    const months = tasks.map(task => task.month);
+    const months = tasks.map(task => task.month);  // 修正: dateからmonthに変更
     const counts = tasks.map(task => task.count);
 
     const data = {
