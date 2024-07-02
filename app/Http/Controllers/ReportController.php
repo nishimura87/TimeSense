@@ -16,8 +16,14 @@ class ReportController extends Controller
         ->orderBy('month')
         ->get();
 
+        $currentMonthProgress = Task::selectRaw('progress, COUNT(*) as count')
+        ->whereRaw('DATE_FORMAT(created_at, "%Y-%m") = DATE_FORMAT(NOW(), "%Y-%m")')
+        ->groupBy('progress')
+        ->get();
+
         return Inertia::render('Reports/Index', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'currentMonthProgress' => $currentMonthProgress
         ]);
     }
 
