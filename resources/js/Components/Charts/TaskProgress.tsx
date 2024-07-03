@@ -1,8 +1,9 @@
 import React from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
+import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 interface Progress {
     progress: string;
@@ -14,7 +15,6 @@ interface PieChartProps {
 }
 
 const TaskProgressChart: React.FC<PieChartProps> = ({ tasks }) => {
-
     const progressCounts = tasks.reduce((acc, task) => {
         acc[task.progress] = (acc[task.progress] || 0) + task.count;
         return acc;
@@ -38,6 +38,17 @@ const TaskProgressChart: React.FC<PieChartProps> = ({ tasks }) => {
     };
 
     const options = {
+        plugins: {
+            datalabels: {
+                formatter: (value: number, context: Context) => {
+                    const label = context.chart.data.labels?.[context.dataIndex];
+                    return label ? `${label}: ${value}` : `${value}`;
+                },
+                font: {
+                    weight: 'bold' as 'bold' | 'normal' | 'bolder' | 'lighter'
+                }
+            }
+        }
     };
 
     return <Pie data={data} options={options} />;

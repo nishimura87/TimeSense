@@ -34,6 +34,11 @@ const BarChart: React.FC<BarChartProps> = ({ tasks }) => {
                 beginAtZero: true,
             },
         },
+        plugins: {
+            datalabels: {
+                display: false
+            }
+        }
     };
 
     return <Bar data={data} options={options} />;
