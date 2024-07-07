@@ -1,9 +1,9 @@
 import React from 'react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import ChartDataLabels, { Context } from 'chartjs-plugin-datalabels';
 
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+ChartJS.register(ArcElement, Tooltip, Legend, Title, ChartDataLabels);
 
 interface Progress {
     progress: string;
@@ -22,6 +22,7 @@ const TaskProgressChart: React.FC<PieChartProps> = ({ tasks }) => {
 
     const dataValues = Object.values(progressCounts);
 
+    const currentMonth = new Date().toLocaleString('ja-JP', { month: 'long' });
     const data = {
         labels: ['未着手', '進行中', '完了'],
         datasets: [
@@ -39,6 +40,20 @@ const TaskProgressChart: React.FC<PieChartProps> = ({ tasks }) => {
 
     const options = {
         plugins: {
+            title: {
+                display: true,
+                text: `${currentMonth}:タスクの進捗率`,
+                font: {
+                    size: 15, // 文字サイズ
+                    weight: 'bold' as 'bold' | 'normal' | 'bolder' | 'lighter'
+                }
+            },
+            legend: {
+                position: 'bottom' as const,
+                labels: {
+                    padding: 5,
+                },
+            },
             datalabels: {
                 formatter: (value: number, context: Context) => {
                     const label = context.chart.data.labels?.[context.dataIndex];

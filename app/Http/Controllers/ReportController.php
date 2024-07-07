@@ -11,10 +11,13 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $tasks = Task::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
-        ->groupBy('month')
-        ->orderBy('month')
+        $tasks = Task::selectRaw('DATE(created_at) as day, COUNT(*) as count')
+        ->whereRaw('DATE_FORMAT(created_at, "%Y-%m") = DATE_FORMAT(NOW(), "%Y-%m")')
+        ->groupBy('day')
+        ->orderBy('day')
         ->get();
+
+
 
         $currentMonthProgress = Task::selectRaw('progress, COUNT(*) as count')
         ->whereRaw('DATE_FORMAT(created_at, "%Y-%m") = DATE_FORMAT(NOW(), "%Y-%m")')

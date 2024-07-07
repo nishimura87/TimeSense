@@ -6,7 +6,7 @@ import TaskCount from "@/Components/Charts/TaskCount";
 import TaskProgress from "@/Components/Charts/TaskProgress";
 
 interface Task {
-    month: string;
+    day: string;
     progress: string;
     count: number;
 }
@@ -33,10 +33,10 @@ export default function Index(props: PageProps) {
         <Authenticated auth={props.auth}>
             <div className="flex justify-center">
                 <div className="flex flex-col md:flex-row justify-center items-center w-4/5 space-y-4 md:space-y-0 md:space-x-4">
-                    <div className="w-full md:w-1/2">
+                    <div className="w-full md:w-1/2 border border-gray-300 rounded p-4 h-80 bg-white flex justify-center items-center">
                         <TaskCount tasks={props.tasks} />
                     </div>
-                    <div className="w-full md:w-1/3">
+                    <div className="w-full md:w-1/3 border border-gray-300 rounded p-4 h-80 bg-white flex justify-center items-center">
                         <TaskProgress tasks={props.currentMonthProgress} />
                     </div>
                 </div>
