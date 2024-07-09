@@ -32,7 +32,7 @@ export default function Index(props: PageProps) {
     return (
         <Authenticated auth={props.auth}>
             <div className="flex justify-center mb-4">
-                <div className="w-3/4 border border-gray-300 rounded p-4 h-80 bg-white flex justify-center items-center">
+                <div className="w-4/5 border border-gray-300 rounded p-4 h-80 bg-white flex justify-center items-center">
                     <TaskCount tasks={props.tasks} />
                 </div>
             </div>

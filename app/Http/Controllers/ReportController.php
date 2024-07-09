@@ -17,8 +17,6 @@ class ReportController extends Controller
         ->orderBy('day')
         ->get();
 
-
-
         $currentMonthProgress = Task::selectRaw('progress, COUNT(*) as count')
         ->whereRaw('DATE_FORMAT(created_at, "%Y-%m") = DATE_FORMAT(NOW(), "%Y-%m")')
         ->groupBy('progress')
