@@ -9,12 +9,11 @@ registerLocale('ja', ja);
 
 interface Props {
     selected: Date | null;
-    initialDate: Date;
     onChange: (date: Date | null) => void;
 }
 
-const DatepickerWrapper: React.FC<Props> = ({ selected, initialDate, onChange }) => {
-    const [selectedDate, setSelectedDate] = useState<Date | null>(selected || initialDate);
+const DatepickerWrapper: React.FC<Props> = ({ selected, onChange }) => {
+    const [selectedDate, setSelectedDate] = useState<Date | null>(selected);
     const today = new Date();
     
     const getDayClassName = (date: Date): string => {
@@ -64,6 +63,7 @@ const DatepickerWrapper: React.FC<Props> = ({ selected, initialDate, onChange })
                 todayButton="今日"
                 dayClassName={getDayClassName}
                 minDate={today}
+                placeholderText="期日" 
                 className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm cursor-pointer ${className}"
             />
         </>
@@ -72,7 +72,6 @@ const DatepickerWrapper: React.FC<Props> = ({ selected, initialDate, onChange })
 
 DatepickerWrapper.propTypes = {
     selected: PropTypes.instanceOf(Date), // Date型であることを検証
-    initialDate: PropTypes.instanceOf(Date).isRequired, // 必須のDate型であることを検証
     onChange: PropTypes.func.isRequired, // 必須の関数であることを検証
 };
 
