@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Authenticated from "@/Layouts/Authenticated";
 import SubmitTask from '@/Components/SubmitTask';
 import Task from '@/Components/Task';
 import ReactPaginate from 'react-paginate';
 import { Inertia } from '@inertiajs/inertia';
 import ErrorMessages from '@/Components/ErrorMessages';
+import SearchForm from '@/Components/SearchForm';
 
 export default function Index(props: any) {
     const tasks = Array.isArray(props.tasks.data) ? props.tasks.data : [];
-    const [currentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
     const tasksPerPage = 10; // 1ページあたりのtask数
     const [forcePage, setForcePage] = useState(props.tasks.current_page - 1);
+    const [filteredTasks, setFilteredTasks] = useState(tasks);
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+
+    useEffect(() => {
+        filterTasksByMonth(selectedMonth);
+    }, [selectedMonth, tasks]);
 
     // 現在のページに表示するtasksを計算
-    const currentTasks = tasks.slice(currentPage * tasksPerPage, (currentPage + 1) * tasksPerPage);
+    const currentTasks = filteredTasks.slice(currentPage * tasksPerPage, (currentPage + 1) * tasksPerPage);
 
     // ページ変更時のハンドラ
     const handlePageClick = (event: any) => {
         const newPage = event.selected;
+        setCurrentPage(newPage);
         setForcePage(newPage);
         Inertia.visit(`/task?page=${newPage + 1}`);
     };
@@ -26,6 +34,14 @@ export default function Index(props: any) {
     const handleTaskClick = (task: any) => {
         // ここにクリックした時の処理を書く。例えば:
         console.log("Task clicked:", task);
+    };
+
+    const filterTasksByMonth = (month: number) => {
+        const filtered = tasks.filter(task => {
+            const taskMonth = new Date(task.created_at).getMonth();
+            return taskMonth === month;
+        });
+        setFilteredTasks(filtered);
     };
 
     return (
@@ -41,6 +57,12 @@ export default function Index(props: any) {
                 </div>
                 )}
                 <hr className="my-3" />
+                
+                <div className="flex items-center px-1 space-x-4 justify-end">
+                    <h3 className="text-lg font-bold mb-2">表示月の選択</h3>
+                    <SearchForm onMonthChange={setSelectedMonth} />
+                </div>
+
                 <table className="w-full table-fixed">
                     <thead>
                         <tr>
