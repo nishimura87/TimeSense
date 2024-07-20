@@ -10,7 +10,7 @@ use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\TaskRequest;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -19,13 +19,26 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        // 'created_at'で最新順に並び替えてからページネーションを適用
-        $tasks = \Auth::user()->tasks()->orderBy('created_at', 'desc')->paginate(10);
+        $selectedMonth = $request->input('month');
+        $tasksQuery = Auth::user()->tasks();
 
-        return Inertia::render('Tasks/Index', ['tasks' => $tasks]);
+        if ($selectedMonth) {
+            $tasksQuery->whereMonth('created_at', date('m', strtotime($selectedMonth)))
+                ->whereYear('created_at', date('Y', strtotime($selectedMonth)));
+        }
+
+        $tasks = $tasksQuery->latest()->paginate(10);
+
+        return Inertia::render('Tasks/Index', [
+            'tasks' => $tasks,
+            'selectedMonth' => $selectedMonth,
+        ]);
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.

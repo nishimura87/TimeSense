@@ -8,40 +8,35 @@ import ErrorMessages from '@/Components/ErrorMessages';
 import SearchForm from '@/Components/SearchForm';
 
 export default function Index(props: any) {
-    const tasks = Array.isArray(props.tasks.data) ? props.tasks.data : [];
-    const [currentPage, setCurrentPage] = useState(0);
-    const tasksPerPage = 10; // 1ページあたりのtask数
-    const [forcePage, setForcePage] = useState(props.tasks.current_page - 1);
-    const [filteredTasks, setFilteredTasks] = useState(tasks);
-    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+    const [currentPage, setCurrentPage] = useState(props.tasks.current_page - 1);
+    const [selectedMonth, setSelectedMonth] = useState(props.selectedMonth || '');
+    const [tasks, setTasks] = useState(props.tasks.data || []);
+    const [totalPages, setTotalPages] = useState(props.tasks.last_page || 1);
 
+    // ページと月が変更された時に呼び出される
     useEffect(() => {
-        filterTasksByMonth(selectedMonth);
-    }, [selectedMonth, tasks]);
+        // 状態の更新が必要ない場合は early return する
+        if (props.tasks.current_page - 1 === currentPage && props.selectedMonth === selectedMonth) {
+            return;
+        }
 
-    // 現在のページに表示するtasksを計算
-    const currentTasks = filteredTasks.slice(currentPage * tasksPerPage, (currentPage + 1) * tasksPerPage);
-
-    // ページ変更時のハンドラ
-    const handlePageClick = (event: any) => {
-        const newPage = event.selected;
-        setCurrentPage(newPage);
-        setForcePage(newPage);
-        Inertia.visit(`/task?page=${newPage + 1}`);
-    };
-
-    // Taskをクリックした時の処理
-    const handleTaskClick = (task: any) => {
-        // ここにクリックした時の処理を書く。例えば:
-        console.log("Task clicked:", task);
-    };
-
-    const filterTasksByMonth = (month: number) => {
-        const filtered = tasks.filter(task => {
-            const taskMonth = new Date(task.created_at).getMonth();
-            return taskMonth === month;
+        // 月が変更された場合、またはページが変更された場合にのみ API リクエストを発行
+        Inertia.visit(`/task?page=${currentPage + 1}&month=${selectedMonth}`, {
+            preserveState: true,
+            onSuccess: (response) => {
+                setTasks(response.props.tasks.data);
+                setTotalPages(response.props.tasks.last_page);
+            }
         });
-        setFilteredTasks(filtered);
+    }, [currentPage, selectedMonth, props.tasks.current_page, props.selectedMonth]);
+
+    const handlePageClick = (event: any) => {
+        setCurrentPage(event.selected);
+    };
+
+    const handleMonthChange = (month: string) => {
+        setSelectedMonth(month);
+        setCurrentPage(0); // ページをリセット
     };
 
     return (
@@ -49,20 +44,16 @@ export default function Index(props: any) {
             <div className="max-w-4xl mx-auto p-3 bg-white border rounded">
                 <SubmitTask />
                 {Object.keys(props.errors).length > 0 && (
-                <div className="mt-3">
-                    {Object.entries(props.errors).map(([field, errors]) => (
-                        // errorsの型をstring[] | undefinedに強制する
-                        <ErrorMessages key={field} errors={errors as string[] | undefined} />
-                    ))}
-                </div>
+                    <div className="mt-3">
+                        {Object.entries(props.errors).map(([field, errors]) => (
+                            <ErrorMessages key={field} errors={errors as string[] | undefined} />
+                        ))}
+                    </div>
                 )}
                 <hr className="my-3" />
-                
-                <div className="flex items-center px-1 space-x-4 justify-end">
-                    <h3 className="text-lg font-bold mb-2">表示月の選択</h3>
-                    <SearchForm onMonthChange={setSelectedMonth} />
+                <div className="flex justify-end">
+                    <SearchForm onMonthChange={handleMonthChange} initialMonth={props.selectedMonth} />
                 </div>
-
                 <table className="w-full table-fixed">
                     <thead>
                         <tr>
@@ -74,20 +65,20 @@ export default function Index(props: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentTasks.map((task: any) => (
-                            <Task key={task.id} task={task} onClick={handleTaskClick} />
+                        {tasks.map((task: any) => (
+                            <Task key={task.id} task={task} />
                         ))}
                     </tbody>
                 </table>
-                {props.tasks.last_page > 1 && (
+                {totalPages > 1 && (
                     <ReactPaginate
                         previousLabel={"前"}
                         nextLabel={"次"}
                         breakLabel={"..."}
-                        pageCount={props.tasks.last_page}
+                        pageCount={totalPages}
                         marginPagesDisplayed={2}
                         pageRangeDisplayed={5}
-                        forcePage={forcePage}
+                        forcePage={currentPage}
                         onPageChange={handlePageClick}
                         containerClassName="flex my-2 text-lg items-center"
                         pageClassName="border"
