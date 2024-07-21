@@ -7,31 +7,44 @@ import { Inertia } from '@inertiajs/inertia';
 import ErrorMessages from '@/Components/ErrorMessages';
 import SearchForm from '@/Components/SearchForm';
 
-export default function Index(props: any) {
+interface TaskType {
+    id: number;
+    // 他のタスクのプロパティもここに追加する
+}
+
+interface TasksResponse {
+    data: TaskType[];
+    current_page: number;
+    last_page: number;
+}
+
+interface Props {
+    auth: any;
+    tasks: TasksResponse;
+    selectedMonth?: string;
+    errors: Record<string, string[]>;
+}
+
+export default function Index(props: Props) {
     const [currentPage, setCurrentPage] = useState(props.tasks.current_page - 1);
     const [selectedMonth, setSelectedMonth] = useState(props.selectedMonth || '');
     const [tasks, setTasks] = useState(props.tasks.data || []);
     const [totalPages, setTotalPages] = useState(props.tasks.last_page || 1);
 
-    // ページと月が変更された時に呼び出される
     useEffect(() => {
-        // 状態の更新が必要ない場合は early return する
-        if (props.tasks.current_page - 1 === currentPage && props.selectedMonth === selectedMonth) {
-            return;
-        }
-
-        // 月が変更された場合、またはページが変更された場合にのみ API リクエストを発行
         Inertia.visit(`/task?page=${currentPage + 1}&month=${selectedMonth}`, {
             preserveState: true,
-            onSuccess: (response) => {
+            onSuccess: (response: any) => {
                 setTasks(response.props.tasks.data);
                 setTotalPages(response.props.tasks.last_page);
             }
         });
-    }, [currentPage, selectedMonth, props.tasks.current_page, props.selectedMonth]);
+    }, [currentPage, selectedMonth]);
 
-    const handlePageClick = (event: any) => {
-        setCurrentPage(event.selected);
+    const handlePageClick = (event: { selected: number }) => {
+        if (event.selected !== currentPage) {
+            setCurrentPage(event.selected);
+        }
     };
 
     const handleMonthChange = (month: string) => {
@@ -46,7 +59,7 @@ export default function Index(props: any) {
                 {Object.keys(props.errors).length > 0 && (
                     <div className="mt-3">
                         {Object.entries(props.errors).map(([field, errors]) => (
-                            <ErrorMessages key={field} errors={errors as string[] | undefined} />
+                            <ErrorMessages key={field} errors={errors} />
                         ))}
                     </div>
                 )}
@@ -65,9 +78,15 @@ export default function Index(props: any) {
                         </tr>
                     </thead>
                     <tbody>
-                        {tasks.map((task: any) => (
-                            <Task key={task.id} task={task} />
-                        ))}
+                        {tasks.length === 0 ? (
+                            <tr>
+                                <td colSpan={5} className="text-center py-4">表示するタスクがありません</td>
+                            </tr>
+                        ) : (
+                            tasks.map((task) => (
+                                <Task key={task.id} task={task} />
+                            ))
+                        )}
                     </tbody>
                 </table>
                 {totalPages > 1 && (
