@@ -113,7 +113,7 @@ class TaskController extends Controller
         $task->fill($request->validated());
         $task->save();
 
-        return Redirect::route('task.index')->with('message', 'Task updated successfully');
+        return Redirect::route('task.index');
     }
 
     /**
@@ -122,13 +122,11 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Task $task): RedirectResponse
+    public function destroy(Task $task)
     {
         $this->authorize('delete', $task);
         $task->delete();
 
-        $page = $request->input('page', 1);
-
-        return redirect(route('task.index', ['page' => $page]));
+        return Redirect::route('task.index');
     }
 }

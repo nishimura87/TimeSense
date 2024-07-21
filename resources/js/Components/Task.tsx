@@ -31,7 +31,7 @@ interface TaskProps {
 
 const Task: React.FC<TaskProps> = ({ task }) => {
 
-    const { data, setData, patch, delete: destroy, processing } = useForm(task);
+    const { data, setData, delete: destroy, processing } = useForm(task);
     const [title, setTitle] = useState(task.title || '');
     const [dueDate, setDueDate] = useState<Date | null>(task.due_date ? new Date(task.due_date) : null);
 
@@ -49,9 +49,10 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         const queryParams = new URLSearchParams(window.location.search);
         const currentPage = queryParams.get('page') || '1';
         if (data.page !== currentPage) {
-        setData({ ...data, page: currentPage });
+            setData(prevData => ({ ...prevData, page: currentPage }));
         }
-    }, [data.page, setData]);
+    }, [data.page]);
+
 
     const updateTitle = async (title: string) => {
         if (title) {
@@ -96,11 +97,13 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         }
     };
 
-    const destroySubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const destroySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const queryParams = new URLSearchParams(window.location.search);
-        const page = queryParams.get('page') || '1';
-        destroy(route('task.destroy', task.id, page));
+        try {
+            await destroy(route('task.destroy', task.id));
+        } catch (error) {
+            console.error('タスクの削除に失敗しました:', error);
+        }
     };
 
     const options = [
